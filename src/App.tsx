@@ -1,14 +1,10 @@
-import React from 'react';
-
+import React, { ReactNode } from 'react';
 import './App.css';
-import { Timer } from './components/Timer';
+import { Life } from './components/Life';
 
 function App() {
-  return <div className="container">
-    <Timer cityCountry="London" />
-    <Timer cityCountry="Vladivostok" />
-    <Timer cityCountry="Israel" />
-    <Timer cityCountry="Toronto" />
+  return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <Life />
   </div>
 }
 
