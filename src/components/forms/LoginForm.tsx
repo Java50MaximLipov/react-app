@@ -1,6 +1,7 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
+import GoogleIcon from "@mui/icons-material/Google";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -13,6 +14,48 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LoginData } from "../../model/LoginData";
+import { authService } from "../../config/auth-service-config";
+import { Collapse, Alert, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { useSelector } from "react-redux";
+import { codeReducer } from "../../redux/codeSlice";
+
+//  ~~~~~~ HW-41 update start ~~~~~~
+function ErrorAlert() {
+  const [isOpen, setOpen] = React.useState(false);
+  const errorStatus = useSelector(
+    (state: ReturnType<typeof codeReducer>) => state.codeState.code
+  );
+  React.useEffect(() => {
+    setOpen(errorStatus !== "OK");
+  }, [errorStatus]);
+
+  return (
+    <Box sx={{ width: "100%" }}>
+      <Collapse in={isOpen}>
+        <Alert
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          Error: {errorStatus}. Sign in again.
+        </Alert>
+      </Collapse>
+    </Box>
+  );
+}
+//  ~~~~~~ HW-41 update finish ~~~~~~
 
 function Copyright(props: any) {
   return (
@@ -45,6 +88,13 @@ export const LoginForm: React.FC<Props> = ({ submitFn }) => {
       password: data.get("password") as string,
     });
   };
+
+  //  ~~~~~~ HW-41 update start ~~~~~~
+  function handleGoogleSignIn() {
+    authService.login({ email: "GOOGLE", password: "" });
+  }
+  //  ~~~~~~ HW-41 update finish ~~~~~~
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -101,6 +151,24 @@ export const LoginForm: React.FC<Props> = ({ submitFn }) => {
             >
               Sign In
             </Button>
+
+            {/* ~~~~~~ HW-41 update start ~~~~~~ */}
+            <ErrorAlert />
+            <Typography component="h1" variant="subtitle1" align="center">
+              or
+            </Typography>
+            <Button
+              type="button"
+              fullWidth
+              variant="outlined"
+              endIcon={<GoogleIcon />}
+              sx={{ mt: 2, mb: 2 }}
+              onClick={handleGoogleSignIn}
+            >
+              Sign In With Google
+            </Button>
+            {/* ~~~~~~ HW-41 update finish ~~~~~~ */}
+
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

@@ -1,8 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: { code: string } = {
+//  ~~~~~~  HW-41 update start  ~~~~~~
+const initialState: {
+  [property: string]: any;
+  code: string;
+} = {
   code: "OK",
 };
+//  ~~~~~~  HW-41 update finish ~~~~~~
 const codeSlice = createSlice({
   initialState,
   name: "codeState",
