@@ -5,4 +5,5 @@ export type RouteType = {
   no_authenticated?: boolean;
   authenticated?: boolean;
   admin?: boolean;
+  client?: boolean;
 };

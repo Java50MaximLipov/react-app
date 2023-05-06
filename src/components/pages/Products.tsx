@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux"
-import { NavLink, Outlet } from "react-router-dom"
 import { ProductsClient } from "./ProductsClient";
 import { ProductsAdmin } from "./ProductsAdmin";
 

@@ -7,7 +7,6 @@ import {
   getDoc,
   setDoc,
   deleteDoc,
-  DocumentData,
   DocumentReference,
   CollectionReference,
 } from "firebase/firestore";
@@ -17,7 +16,6 @@ import { firebaseApp } from "../config/firebase-config";
 
 export default class OrdersServiceFirebase implements OrdersService {
   db = getFirestore(firebaseApp);
-
   async addShoppingProduct(
     collectionName: string,
     id: string,
@@ -26,7 +24,6 @@ export default class OrdersServiceFirebase implements OrdersService {
     const docRef = doc(this.db, collectionName, id);
     await setDoc(docRef, shoppingProduct);
   }
-
   async addShoppingProductUnit(
     collectionName: string,
     id: string
@@ -44,15 +41,6 @@ export default class OrdersServiceFirebase implements OrdersService {
     }
     await this.addShoppingProduct(collectionName, id, { id, count: count + 1 });
   }
-
-  async removeShoppingProduct(
-    collectionName: string,
-    id: string
-  ): Promise<void> {
-    const docRef = doc(this.db, collectionName, id);
-    await deleteDoc(docRef);
-  }
-
   async removeShoppingProductUnit(
     collectionName: string,
     id: string
@@ -77,7 +65,13 @@ export default class OrdersServiceFirebase implements OrdersService {
       });
     }
   }
-
+  async removeShoppingProduct(
+    collectionName: string,
+    id: string
+  ): Promise<void> {
+    const docRef = doc(this.db, collectionName, id);
+    await deleteDoc(docRef);
+  }
   getShoppingCart(collectionName: string): Observable<ShoppingProductType[]> {
     const collectionRef: CollectionReference<ShoppingProductType> = collection(
       this.db,

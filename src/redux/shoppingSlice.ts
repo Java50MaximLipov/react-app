@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ShoppingProductType } from "../model/ShoppingProductType";
 
-const initialState: { shopping: ShoppingProductType[] } = { shopping: [] };
+const initialState: { shopping: ShoppingProductType[] } = {
+  shopping: [],
+};
+
 const shoppingSlice = createSlice({
   initialState,
   name: "shoppingState",

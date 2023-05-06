@@ -1,19 +1,23 @@
-//  React
-import { ReactNode, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-//  App Types, Interfaces, and Services
+import {
+  Typography,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Button,
+} from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
 import { ProductType } from "../../model/ProductType";
+import { ReactNode, useMemo } from "react";
+import { Add, Remove } from "@mui/icons-material";
 import { ShoppingProductType } from "../../model/ShoppingProductType";
 import { ordersService } from "../../config/orders-service-config";
-//  Styles and Components
-import { Button, CardActions, CardMedia, Grid } from "@mui/material";
-import { Card, CardContent, Typography } from "@mui/material";
-import { Add, Remove } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export const ProductsClient: React.FC = () => {
   const navigate = useNavigate();
-  const products: ProductType[] = useSelector<any, ProductType[]>(
+  const products = useSelector<any, ProductType[]>(
     (state) => state.productsState.products
   );
   const authUser = useSelector<any, string>((state) => state.auth.authUser);
@@ -22,11 +26,12 @@ export const ProductsClient: React.FC = () => {
   );
   const counts = useMemo(() => getCounts(), [products, shopping]);
   function getCounts(): number[] {
-    return products.map((product) => getCountProduct(product));
+    console.log(shopping);
+    return products.map((p) => getCountProduct(p));
   }
   function getCountProduct(product: ProductType): number {
     const shoppingProduct: ShoppingProductType | undefined = shopping.find(
-      (shopp) => shopp.id == product.id
+      (s) => s.id == product.id
     );
     let count: number = 0;
     if (shoppingProduct) {
@@ -34,38 +39,44 @@ export const ProductsClient: React.FC = () => {
     }
     return count;
   }
-
   function getProductCards(): ReactNode {
-    return products.map((prod, index) => (
-      <Grid item xs={8} sm={6} md={4} lg={3} key={index}>
+    return products.map((p, index) => (
+      <Grid item xs={8} sm={5} md={3} key={index}>
         <Card>
           <CardMedia
-            sx={{ height: 220 }}
-            image={`images/${prod.image}`}
-            title={prod.title}
+            sx={{ height: 140 }}
+            image={
+              p.image.startsWith("http") || p.image.length > 40
+                ? p.image
+                : `images/${p.image}`
+            }
           />
-          <CardContent>
-            <Typography variant="h6">
-              {" "}
-              {prod.title
-                .split("-")
-                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(" ")}
+          <CardContent
+            sx={{
+              textAlign: "center",
+              backgroundColor: "aliceblue",
+            }}
+          >
+            <Typography gutterBottom sx={{ fontSize: "1.3em" }}>
+              {p.title}
             </Typography>
-            <Typography variant="subtitle2">{prod.unit}</Typography>
-            <Typography variant="subtitle1">{prod.cost} ₪</Typography>
+            <Typography color="text.secondary" sx={{ fontSize: "1.2em" }}>
+              {p.unit}
+            </Typography>
+            <Typography color="text.secondary" sx={{ fontSize: "1.1em" }}>
+              {p.cost} <img src="images/israeli-shekel-icon.svg" width="5%" />
+            </Typography>
           </CardContent>
           <CardActions>
             <Grid container spacing={0} justifyContent="center">
               <Grid item xs={4}>
                 <Button
-                  variant="outlined"
-                  size="small"
+                  size="large"
                   onClick={async () => {
                     if (authUser == "") {
                       navigate("/login");
                     } else {
-                      ordersService.addShoppingProductUnit(authUser, prod.id!);
+                      ordersService.addShoppingProductUnit(authUser, p.id!);
                     }
                   }}
                 >
@@ -74,8 +85,8 @@ export const ProductsClient: React.FC = () => {
               </Grid>
               <Grid item xs={4}>
                 <Typography
-                  variant="subtitle2"
                   sx={{
+                    fontSize: "1.2em",
                     display: "flex",
                     width: "100%",
                     height: "100%",
@@ -86,12 +97,11 @@ export const ProductsClient: React.FC = () => {
                   {counts[index]}
                 </Typography>
               </Grid>
-              <Grid>
+              <Grid item xs={4}>
                 <Button
-                  variant="outlined"
-                  size="small"
+                  size="large"
                   onClick={async () =>
-                    ordersService.removeShoppingProductUnit(authUser, prod.id!)
+                    ordersService.removeShoppingProductUnit(authUser, p.id!)
                   }
                   disabled={counts[index] == 0}
                 >
@@ -111,45 +121,3 @@ export const ProductsClient: React.FC = () => {
     </Grid>
   );
 };
-
-//   return (
-//     <Grid container spacing={2}>
-//       {products.map((product) => (
-//         <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-//           <Card>
-//             <CardMedia
-//               sx={{ height: 220 }}
-//               image={`images/${product.image}`}
-//               title={product.title}
-//             />
-//             <CardContent>
-//               <Typography variant="h6">
-//                 {" "}
-//                 {product.title
-//                   .split("-")
-//                   .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-//                   .join(" ")}
-//               </Typography>
-//               <Typography variant="subtitle2">{product.unit}</Typography>
-//               <Typography variant="subtitle1">{product.cost} ₪</Typography>
-//             </CardContent>
-//             <CardActions>
-//               <Button variant="outlined" size="small">
-//                 -
-//               </Button>
-//               <Typography
-//                 variant="subtitle2"
-//                 sx={{ width: "30px", textAlign: "center" }}
-//               >
-//                 0
-//               </Typography>
-//               <Button variant="outlined" size="small">
-//                 +
-//               </Button>
-//             </CardActions>
-//           </Card>
-//         </Grid>
-//       ))}
-//     </Grid>
-//   );
-// };
